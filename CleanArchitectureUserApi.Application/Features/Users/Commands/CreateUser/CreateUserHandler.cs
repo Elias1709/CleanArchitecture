@@ -1,10 +1,11 @@
 ﻿using CleanArchitectureUserApi.Application.Abstractions.Persistence;
+using CleanArchitectureUserApi.Application.Common.Responses;
 using CleanArchitectureUserApi.Domain.Entities;
 using MediatR;
 
 namespace CleanArchitectureUserApi.Application.Features.Users.Commands.CreateUser
 {
-    public class CreateUserHandler : IRequestHandler<CreateUserCommand, Guid>
+    public class CreateUserHandler : IRequestHandler<CreateUserCommand, ApiResponse<Guid>>
     {
         private readonly IUserRepository _userRepository;
 
@@ -13,7 +14,7 @@ namespace CleanArchitectureUserApi.Application.Features.Users.Commands.CreateUse
             _userRepository = userRepository;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var user = new User(
                 request.Nombres,
@@ -24,7 +25,7 @@ namespace CleanArchitectureUserApi.Application.Features.Users.Commands.CreateUse
 
             await _userRepository.AddAsync(user);
 
-            return user.Id;
+            return new ApiResponse<Guid>(true, "Usuario creado correctamente", user.Id);
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using CleanArchitectureUserApi.Application.Common.Responses;
+using MediatR;
 
 namespace CleanArchitectureUserApi.Application.Features.Users.Commands.UpdateUser
 {
-    public class UpdateUserCommand : IRequest<bool>
+    public class UpdateUserCommand : IRequest<ApiResponse<bool>>
     {
         public Guid Id { get; set; }
 

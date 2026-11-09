@@ -6,6 +6,7 @@ using CleanArchitectureUserApi.Application.Features.Users.Queries.GetAllUsers;
 using CleanArchitectureUserApi.Application.Features.Users.Commands.UpdateUser;
 using CleanArchitectureUserApi.Application.Features.Users.Commands.DeleteUser;
 using CleanArchitectureUserApi.Application.Features.Users.Queries.GetPagedUsers;
+using Azure;
 
 namespace CleanArchitectureUserApi.Controllers;
 
@@ -31,25 +32,25 @@ public class UsersController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var user = await _mediator.Send(
+        var response = await _mediator.Send(
             new GetUserByIdQuery
             {
                 Id = id
             });
 
-        if (user is null)
-            return NotFound();
+        if (!response.Success)
+            return NotFound(response);
 
-        return Ok(user);
+        return Ok(response);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var users = await _mediator.Send(
-            new GetAllUsersQuery());
+        var response = await _mediator.Send(
+        new GetAllUsersQuery());
 
-        return Ok(users);
+        return Ok(response);
     }
 
     [HttpGet("paged")]
@@ -60,8 +61,8 @@ public class UsersController : ControllerBase
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                Nombre = nombre,
-                Email = email
+            Nombre = nombre,
+            Email = email
             });
 
         return Ok(result);
@@ -72,26 +73,24 @@ public class UsersController : ControllerBase
     {
         command.Id = id;
 
-        var updated = await _mediator.Send(command);
+        var response = await _mediator.Send(command);
 
-        if (!updated)
-            return NotFound();
+        if (!response.Success)
+            return NotFound(response);
 
-        return NoContent();
+        return Ok(response);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var deleted = await _mediator.Send(
-            new DeleteUserCommand
-            {
-                Id = id
-            });
-
-        if (!deleted)
-            return NotFound();
-
-        return NoContent();
+        var response = await _mediator.Send(
+        new DeleteUserCommand
+        {
+            Id = id
+        });
+        if (!response.Success)
+            return NotFound(response);
+        return Ok(response);
     }
 }

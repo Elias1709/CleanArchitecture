@@ -1,21 +1,27 @@
 ﻿using CleanArchitectureUserApi.Application.Abstractions.Persistence;
+using CleanArchitectureUserApi.Application.Common.Responses;
 using MediatR;
 
 namespace CleanArchitectureUserApi.Application.Features.Users.Commands.UpdateUser
 {
-    public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, bool>
+    public class UpdateUserHandler : IRequestHandler<UpdateUserCommand,ApiResponse<bool>>
     {
         private readonly IUserRepository _userRepository;
         public UpdateUserHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
-        public async Task<bool> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<bool>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(request.Id);
 
             if (user is null)
-                return false;
+            {
+                return new ApiResponse<bool>(
+                    false,
+                    "Usuario no encontrado",
+                    false);
+            }
 
             user.Update(
                 request.Nombres,
@@ -26,7 +32,10 @@ namespace CleanArchitectureUserApi.Application.Features.Users.Commands.UpdateUse
 
             await _userRepository.UpdateAsync(user);
 
-            return true;
+            return new ApiResponse<bool>(
+                true,
+                "Usuario actualizado correctamente",
+                true);
         }
     }
 }
