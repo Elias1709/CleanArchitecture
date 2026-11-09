@@ -29,14 +29,28 @@ namespace CleanArchitectureUserApi.Infrastructure.Persistence.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<(List<User> Users, int TotalRecords)> GetPagedAsync(int pageNumber, int pageSize)
+        public async Task<(List<User> Users, int TotalRecords)> GetPagedAsync(int pageNumber, int pageSize, string? nombre, string? email)
         {
+            IQueryable<User> query = _context.Users;
+
+            if (!string.IsNullOrWhiteSpace(nombre))
+            {
+                query = query.Where(x => x.Nombres.Contains(nombre));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                query = query.Where(x => x.Email.Contains(email));
+            }
+
             var totalRecords = await _context.Users.CountAsync();
-            var users = await _context.Users
-                                            .OrderBy(x => x.Nombres)
-                                            .Skip((pageNumber - 1) * pageSize)
-                                            .Take(pageSize)
-                                            .ToListAsync();
+
+            var users = await query
+                                    .OrderBy(x => x.Nombres)
+                                    .Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+
             return (users, totalRecords);
         }
         public async Task UpdateAsync(User user)

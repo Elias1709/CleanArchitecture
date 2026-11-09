@@ -53,13 +53,15 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("paged")]
-    public async Task<IActionResult> GetPaged([FromQuery] int pageNumber = 1,[FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetPaged([FromQuery] int pageNumber = 1,[FromQuery] int pageSize = 10, [FromQuery] string? nombre = null, [FromQuery] string? email = null)
     {
         var result = await _mediator.Send(
             new GetPagedUsersQuery
             {
                 PageNumber = pageNumber,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Nombre = nombre,
+                Email = email
             });
 
         return Ok(result);

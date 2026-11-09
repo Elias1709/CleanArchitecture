@@ -15,7 +15,7 @@ namespace CleanArchitectureUserApi.Application.Features.Users.Queries.GetPagedUs
         public async Task<PagedResult<UserDto>> Handle(GetPagedUsersQuery request, CancellationToken cancellationToken)
         {
             var (users, totalRecords) =
-                await _userRepository.GetPagedAsync(request.PageNumber, request.PageSize);
+                await _userRepository.GetPagedAsync(request.PageNumber, request.PageSize, request.Nombre, request.Email);
 
             var userDtos = users.Select(user =>
                 new UserDto
