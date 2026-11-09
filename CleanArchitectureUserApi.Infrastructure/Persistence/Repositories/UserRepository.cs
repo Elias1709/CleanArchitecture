@@ -28,6 +28,17 @@ namespace CleanArchitectureUserApi.Infrastructure.Persistence.Repositories
         {
             return await _context.Users.ToListAsync();
         }
+
+        public async Task<(List<User> Users, int TotalRecords)> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var totalRecords = await _context.Users.CountAsync();
+            var users = await _context.Users
+                                            .OrderBy(x => x.Nombres)
+                                            .Skip((pageNumber - 1) * pageSize)
+                                            .Take(pageSize)
+                                            .ToListAsync();
+            return (users, totalRecords);
+        }
         public async Task UpdateAsync(User user)
         {
             _context.Users.Update(user);

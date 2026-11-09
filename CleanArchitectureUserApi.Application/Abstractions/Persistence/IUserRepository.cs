@@ -14,6 +14,7 @@ namespace CleanArchitectureUserApi.Application.Abstractions.Persistence
         Task<User?> GetByIdAsync(Guid id);
 
         Task<List<User>> GetAllAsync();
+        Task<(List<User> Users, int TotalRecords)> GetPagedAsync(int pageNumber, int pageSize);
 
         Task UpdateAsync(User user);
 

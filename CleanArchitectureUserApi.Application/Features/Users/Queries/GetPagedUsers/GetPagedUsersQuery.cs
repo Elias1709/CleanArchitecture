@@ -1,0 +1,13 @@
+﻿using CleanArchitectureUserApi.Application.Common.Pagination;
+using CleanArchitectureUserApi.Application.DTOs;
+using MediatR;
+
+namespace CleanArchitectureUserApi.Application.Features.Users.Queries.GetPagedUsers
+{
+    public class GetPagedUsersQuery : IRequest<PagedResult<UserDto>>
+    {
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 10;  
+    }
+}
